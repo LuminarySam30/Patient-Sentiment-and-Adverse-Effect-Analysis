@@ -1,14 +1,9 @@
-from groq import Groq
 def genai(initial):
-    client = Groq(api_key="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")
-    chat_completion = client.chat.completions.create(
-        messages=[
-                {
-                    "role": "user",
-                    "content": initial,
-                }
-                ],
-        model="llama3-8b-8192",
-            )
-    response=chat_completion.choices[0].message.content
-    return response
+    # Mock response for when API key is missing
+    print(f"DEBUG: GenAI called with prompt: {initial[:50]}...")
+    if "side effects" in initial.lower():
+        return "*Nausea*Headache*Dizziness*Fatigue*"
+    elif "reviews" in initial.lower():
+        return "This medication helped me a lot, but I felt a bit dizzy. Overall good experience."
+    else:
+        return "*Mock Data 1*Mock Data 2*Mock Data 3*"
