@@ -4,149 +4,150 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prescription Analyzer</title>
+  <title>MediView - Prescription Analysis</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(45deg,black,rgb(65, 61, 61));
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      font-family: 'Inter', sans-serif;
     }
-
-    .container {
-      max-width: 500px;
-      position:absolute;
-      left:20px;
-      top: 100px;
-      width: 90%;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      text-align: center;
-    }
-
-    .container h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-      color: #333;
-    }
-
-    .image-upload {
-      border: 2px dashed #ccc;
-      border-radius: 10px;
-      padding: 20px;
-      position: relative;
-      text-align: center;
-      cursor: pointer;
-    }
-
-    .image-upload input {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    .preview {
-      margin-top: 20px;
-    }
-
-    .preview img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        padding: 15px;
-      }
-
-      .container h1 {
-        font-size: 20px;
-      }
-
-      button {
-        width: 100%;
-      }
-    }
-    .logo{
-      position: absolute;
-      right: 20px;
-    }
-    .result {
-      box-shadow: inset 44px -44px 44px 0px rgba(165, 165, 165, 0.1), inset -44px 44px 44px 0px rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(44px);
-      background: rgba(242, 241, 241, 0.641);
-      max-height: 300px; /* Adjust this as needed */
-      max-width: 500px;
-      overflow-y: auto;  /* Enables vertical scrolling */
-      overflow-x: hidden;
-      margin-left: 80px; 
-      margin-top: -230px;
-}
-
   </style>
 </head>
 
-<body>
-  <img src="static/prescription icon 2.png" class="logo">
-  <div class="container">
-    <h1>Analyze Prescription</h1>
-    <form action="/AnalyzePrescription" method="post" enctype="multipart/form-data">
-      <div class="image-upload">
-        <p>Click or Drag to Upload Prescription</p>
-        <input type="file" name="prescription" accept="image/*" capture="camera" onchange="showPreview(event)" required>
+<body class="bg-slate-50 min-h-screen flex flex-col lg:flex-row">
+  <!-- Sidebar -->
+  <aside class="w-full lg:w-72 bg-white border-b lg:border-r border-slate-200 flex flex-col pt-4 lg:pt-0">
+    <div class="p-8 flex items-center gap-3">
+      <div class="bg-teal-600 p-2 rounded-xl">
+        <i data-lucide="activity" class="text-white w-6 h-6"></i>
       </div>
-      <div class="preview" id="preview"></div>
-      <button type="submit">Analyze</button>
-    </form>
-  </div>
-    <div class="result">
-      {% for point in results %}
-      <p id="rev_sum" style="font-size: 18px; margin-bottom: 10px;">{{ point }}</p>
-      {% endfor %}
-</div>
+      <span class="text-2xl font-bold text-slate-900 tracking-tight">MediView</span>
+    </div>
+
+    <nav
+      class="flex-grow px-4 space-y-2 mt-4 overflow-x-auto lg:overflow-x-visible flex lg:flex-col gap-2 lg:gap-0 pb-4 lg:pb-0">
+      <a href="/home"
+        class="flex items-center gap-4 px-6 py-4 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-teal-600 font-medium transition-all whitespace-nowrap lg:whitespace-normal">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+      </a>
+      <a href="/doctor"
+        class="flex items-center gap-4 px-6 py-4 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-teal-600 font-medium transition-all whitespace-nowrap lg:whitespace-normal">
+        <i data-lucide="user-cog" class="w-5 h-5"></i> Virtual Doctor
+      </a>
+      <a href="/Diet"
+        class="flex items-center gap-4 px-6 py-4 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-teal-600 font-medium transition-all whitespace-nowrap lg:whitespace-normal">
+        <i data-lucide="utensils" class="w-5 h-5"></i> Diet Plan
+      </a>
+      <a href="/Prescription"
+        class="flex items-center gap-4 px-6 py-4 rounded-xl bg-blue-50 border-r-4 border-blue-600 text-blue-600 font-semibold transition-all whitespace-nowrap lg:whitespace-normal">
+        <i data-lucide="file-search" class="w-5 h-5"></i> Prescription Check
+      </a>
+    </nav>
+
+    <div class="p-6 border-t border-slate-100 hidden lg:block">
+      <a href="/logout"
+        class="flex items-center gap-4 px-6 py-4 rounded-xl text-red-500 hover:bg-red-50 font-semibold transition-all">
+        <i data-lucide="log-out" class="w-5 h-5"></i> Sign Out
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-grow p-6 lg:p-12 overflow-y-auto bg-slate-50">
+    <div class="max-w-4xl mx-auto space-y-8">
+      <div class="space-y-1">
+        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Prescription Scanner</h1>
+        <p class="text-slate-500 font-medium text-lg">Upload your prescription for instant text extraction and digital
+          analysis.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        <!-- Upload Section -->
+        <div class="space-y-6">
+          <div class="bg-white p-8 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100">
+            <form action="/AnalyzePrescription" method="post" enctype="multipart/form-data" class="space-y-6">
+              <label
+                class="group relative flex flex-col items-center justify-center w-full h-80 border-2 border-dashed border-slate-200 rounded-3xl cursor-pointer bg-slate-50 hover:bg-blue-50 hover:border-blue-400 transition-all overflow-hidden">
+                <div id="upload-placeholder" class="flex flex-col items-center justify-center pt-5 pb-6">
+                  <div class="bg-white p-4 rounded-full shadow-lg mb-4 group-hover:scale-110 transition-transform">
+                    <i data-lucide="cloud-upload" class="text-blue-600 w-10 h-10"></i>
+                  </div>
+                  <p class="mb-2 text-sm text-slate-700 font-bold">Click or drag & drop</p>
+                  <p class="text-xs text-slate-500 font-medium">PNG, JPG or PDF (MAX 5MB)</p>
+                </div>
+                <div id="preview-container" class="absolute inset-0 hidden">
+                  <img id="image-preview" src="#" alt="Preview" class="w-full h-full object-contain p-4">
+                </div>
+                <input id="prescription-input" type="file" name="prescription" accept="image/*" class="hidden"
+                  onchange="previewImage(event)" required />
+              </label>
+
+              <button type="submit"
+                class="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-200 flex items-center justify-center gap-2">
+                START ANALYSIS
+                <i data-lucide="scan" class="w-5 h-5"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="space-y-6">
+          <div class="bg-white p-8 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 min-h-[400px]">
+            <div class="flex items-center gap-3 mb-6 border-b border-slate-50 pb-4">
+              <i data-lucide="file-text" class="text-teal-600 w-6 h-6"></i>
+              <h3 class="text-xl font-bold text-slate-900">Extracted Content</h3>
+            </div>
+
+            {% if results %}
+            <div class="space-y-4">
+              <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                <ul class="space-y-3">
+                  {% for point in results %}
+                  <li class="flex gap-3 text-slate-700 font-medium leading-relaxed">
+                    <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-teal-500 flex-shrink-0"></div>
+                    {{ point }}
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+
+              <div class="p-4 bg-blue-50 rounded-xl border border-blue-100 flex gap-3 items-center">
+                <i data-lucide="info" class="text-blue-500 w-5 h-5 flex-shrink-0"></i>
+                <p class="text-xs text-blue-800 font-medium">Text extraction completed using OCR. Please confirm dosages
+                  manually.</p>
+              </div>
+            </div>
+            {% else %}
+            <div class="h-64 flex flex-col items-center justify-center text-center opacity-40">
+              <i data-lucide="file-search" class="w-16 h-16 mb-4 text-slate-300"></i>
+              <p class="text-slate-500 font-medium">Upload a prescription to see extracted data here.</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 
   <script>
-    function showPreview(event) {
-      const preview = document.getElementById('preview');
-      const file = event.target.files[0];
-      if (file) {
+    lucide.createIcons();
+
+    function previewImage(event) {
+      const input = event.target;
+      const preview = document.getElementById('image-preview');
+      const container = document.getElementById('preview-container');
+      const placeholder = document.getElementById('upload-placeholder');
+
+      if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function (e) {
-          preview.innerHTML = `<img src="${e.target.result}" alt="Prescription Preview">`;
-        };
-        reader.readAsDataURL(file);
+          preview.src = e.target.result;
+          container.classList.remove('hidden');
+          placeholder.classList.add('hidden');
+        }
+        reader.readAsDataURL(input.files[0]);
       }
     }
   </script>

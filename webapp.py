@@ -13,6 +13,7 @@ from ReviewThread import process_reviews_thread
 from DietPlan import generativedietplan
 from PredictDisease import predictdisease
 from transformers import BertModel
+from GenAI import genai
 
 model = BertModel.from_pretrained("bert-base-uncased", torch_dtype=torch.float16, attn_implementation="sdpa")
 
@@ -136,10 +137,10 @@ def dietresult():
 def analyzeprescription():
      if request.method == 'POST' and 'prescription' in request.files:
         input_file = request.files['prescription']
-        
-        # Define a path to save the uploaded file
-        save_path = 'C:\\Users\\manas\\OneDrive\\Desktop\\Medview\\Prescriptionimg.png'
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)  # Create directory if it doesn't exist
+        # Create a relative upload folder within static
+        upload_folder = os.path.join(app.root_path, 'static', 'uploads')
+        os.makedirs(upload_folder, exist_ok=True)
+        save_path = os.path.join(upload_folder, 'Prescriptionimg.png')
         
         # Save the uploaded file
         input_file.save(save_path)
@@ -156,13 +157,27 @@ def analyzeprescription():
 def doctor():
     return render_template('AI doc page.html')
 
-@app.route("/predictdisease",methods=['GET','POST'])
+@app.route("/predictdisease", methods=['GET', 'POST'])
 def predictdiseaseroute():
-    symptoms = request.form.getlist("inputs")
-    if symptoms:
-        print(symptoms)
-        results= predictdisease(symptoms)
-        return render_template('AI doc page.html',results=results)
+    if request.method == 'POST':
+        symptoms = request.form.getlist("inputs")
+        symptoms = [s for s in symptoms if s.strip()]
+        if symptoms:
+            predicted_disease = predictdisease(symptoms)
+            prompt = (
+                f"The patient has reported the following symptoms: {', '.join(symptoms)}. "
+                f"The predicted diagnosis based on a machine learning model is {predicted_disease}. "
+                "Please provide a 3-4 sentence explanation of why these symptoms might lead to this diagnosis, "
+                "what this condition generally entails, and strictly recommend seeing a doctor for confirmation. "
+                "Do not confirm the diagnosis as absolute truth, but as a possibility."
+            )
+            explanation = genai(prompt)
+            results = {
+                "disease": predicted_disease,
+                "explanation": explanation
+            }
+            return render_template('AI doc page.html', results=results)
+    return render_template('AI doc page.html', results=None)
 
 
 @app.route('/search_suggestions', methods=['GET'])

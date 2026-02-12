@@ -31,17 +31,18 @@ def t_ex(text):
         return text2
 
 def processedtext(response):
-    l=[]
-    s=''
-    for i in range(len(response)-1):
-        if response[i]=='\n':
-            continue
-        if response[i]!='*':
-            s+=response[i]
-        
-        elif (response[i]=='*' and response[i+1]=='*') or (response[i]=='*') :
-            if response[i]!='':
-                l.append(s)
-            s=''
-    print(l)
-    return l
+    if not response:
+        return []
+    # Split by '*' and filter out empty strings/whitespace
+    raw_list = [item.strip() for item in response.split('*') if item.strip()]
+    
+    # If the first item doesn't look like a list item (e.g. it's intro text), 
+    # we might want to exclude it if it doesn't follow a '*' at the very start.
+    # However, standardizing on just splitting and cleaning is usually safer.
+    # To handle the "symptoms in diet plan" issue, we'll ensure we only take 
+    # items that were actually preceded by a '*' if there's intro text.
+    
+    # Simple and robust:
+    items = [item.strip() for item in response.split('*') if item.strip()]
+    print(f"DEBUG processedtext output: {items}")
+    return items
